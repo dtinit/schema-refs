@@ -1,0 +1,271 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Signature Validation Token JSON Schema",
+    "description": "Schema defining the payload format for SVTs",
+    "type": "object",
+    "required": [
+        "jti",
+        "iss",
+        "iat",
+        "sig_val_claims"
+    ],
+    "properties": {
+        "jti": {
+            "description": "JWT ID",
+            "type": "string"
+        },
+        "iss": {
+            "description": "Issuer",
+            "type": "string"
+        },
+        "iat": {
+            "description": "Issued At",
+            "type": "integer"
+        },
+        "aud": {
+            "description": "Audience",
+            "type": [
+                "string",
+                "array"
+            ],
+            "items": {"type": "string"}
+        },
+        "exp": {
+            "description": "Expiration time (seconds since epoch)",
+            "type": "integer"
+        },
+        "sig_val_claims": {
+            "description": "Signature validation claims",
+            "type": "object",
+            "required": [
+                "ver",
+                "profile",
+                "hash_algo",
+                "sig"
+            ],
+            "properties": {
+                "ver": {
+                    "description": "Version",
+                    "type": "string"
+                },
+                "profile": {
+                    "description": "Implementation profile",
+                    "type": "string"
+                },
+                "hash_algo": {
+                    "description": "Hash algorithm URI",
+                    "type": "string"
+                },
+                "sig": {
+                    "description": "Validated signatures",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$def/Signature"
+                    },
+                    "minItems": 1
+                },
+                "ext": {
+                    "description": "Extension map",
+                    "$ref": "#/$def/Extension"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+"additionalProperties": false,
+"$def": {
+         "Signature":{
+             "type": "object",
+             "required": [
+                 "sig_ref",
+                 "sig_data_ref",
+                 "signer_cert_ref",
+                 "sig_val"
+             ],
+             "properties": {
+                 "sig_ref": {
+                     "description": "Signature Reference",
+                     "$ref": "#/$def/SigReference"
+                 },
+                 "sig_data_ref": {
+                     "description": "Signed data array",
+                     "type": "array",
+                     "items": {
+                         "$ref" : "#/$def/SignedDataReference"
+                     },
+                     "minItems": 1
+                 },
+                 "signer_cert_ref": {
+                     "description": "Signer certificate reference",
+                     "$ref": "#/$def/CertReference"
+                 },
+                 "sig_val": {
+                     "description": "Signature validation results",
+                     "type": "array",
+                     "items": {
+                         "$ref": "#/$def/PolicyValidation"
+                     },
+                     "minItems": 1
+                 },
+                 "time_val": {
+                     "description": "Time validations",
+                     "type": "array",
+                     "items": {
+                         "$ref": "#/$def/TimeValidation"
+                     }
+                 },
+                "ext": {
+                    "description": "Extension map",
+                    "$ref": "#/$def/Extension"
+                }
+             },
+             "additionalProperties": false
+         },
+         "SigReference":{
+             "type": "object",
+             "required": [
+                 "sig_hash",
+                 "sb_hash"
+             ],
+             "properties": {
+                 "sig_hash": {
+                     "description": "Hash of the signature value",
+                     "type": "string",
+                     "format": "base64"
+                 },
+                 "sb_hash": {
+                     "description": "Hash of the Signed Bytes",
+                     "type": "string",
+                     "format": "base64"
+                 },
+                 "id": {
+                     "description": "Signature ID reference",
+                     "type": ["string","null"]
+                 }
+             },
+            "additionalProperties": false
+         },
+         "SignedDataReference": {
+             "type": "object",
+             "required": [
+                 "ref",
+                 "hash"
+             ],
+             "properties": {
+                 "ref": {
+                     "description": "Reference to the signed data",
+                     "type": "string"
+                 },
+                 "hash": {
+                     "description": "Signed data hash",
+                     "type": "string",
+                     "format": "base64"
+                 }
+             },
+            "additionalProperties": false
+         },
+         "CertReference":{
+             "type": "object",
+             "required": [
+                 "type",
+                 "ref"
+             ],
+             "properties": {
+                 "type": {
+                     "description": "Type of certificate reference",
+                     "type": "string",
+                     "enum": ["chain","chain_hash"]
+                 },
+                 "ref": {
+                     "description": "Certificate reference data",
+                     "type": "array",
+                     "items": {
+                         "type": "string",
+                         "format": "base64"
+                     },
+                     "minItems": 1
+                 }
+             },
+            "additionalProperties": false
+         },
+         "PolicyValidation":{
+             "type": "object",
+             "required": [
+                 "pol",
+                 "res"
+             ],
+             "properties": {
+                 "pol": {
+                     "description": "Policy identifier",
+                     "type": "string"
+                 },
+                 "res": {
+                     "description": "Signature validation result",
+                     "type": "string",
+                     "enum": ["PASSED","FAILED","INDETERMINATE"]
+                 },
+                 "msg": {
+                     "description": "Message",
+                     "type": ["string","null"]
+                 },
+                 "ext": {
+                    "description": "Extension map",
+                    "$ref": "#/$def/Extension"
+                }
+             },
+            "additionalProperties": false
+         },
+         "TimeValidation":{
+             "type": "object",
+             "required": [
+                 "time",
+                 "type",
+                 "iss"
+             ],
+             "properties": {
+                 "time": {
+                     "description": "Verified time",
+                     "type": "integer"
+                 },
+                 "type": {
+                     "description": "Type of time validation proof",
+                     "type": "string"
+                 },
+                 "iss": {
+                     "description": "Issuer of the time proof",
+                     "type": "string"
+                 },
+                 "id": {
+                     "description": "Time evidence identifier",
+                     "type": ["string","null"]
+
+                 },
+                 "hash": {
+                     "description": "Hash of time evidence",
+                     "type": ["string","null"],
+                     "format": "base64"
+                 },
+                 "val": {
+                     "description": "Validation result",
+                     "type": "array",
+                     "items": {
+                         "$ref": "#/$def/PolicyValidation"
+                     }
+                 },
+                 "ext": {
+                    "description": "Extension map",
+                    "$ref": "#/$def/Extension"
+                }
+             },
+            "additionalProperties": false
+         },
+         "Extension": {
+           "description": "Extension map",
+           "type": ["object","null"],
+           "required": [],
+           "additionalProperties": {
+               "type": "string"
+           }
+         }
+     }
+}
