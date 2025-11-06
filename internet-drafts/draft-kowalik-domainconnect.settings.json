@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Settings structure for DCON",
+  "description": "Unofficial schema for settings objects in draft-kowalik-domainconnect",
+  "type": "object",
+  "$comment": "https://datatracker.ietf.org/doc/draft-kowalik-domainconnect/",
+  "properties": {
+    "providerId": {
+      "type": "string"
+    },
+    "providerName": {
+      "type": "string"
+    },
+    "providerDisplayName": {
+      "type": "string"
+    },
+    "urlSyncUX": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https",
+      "$comment": "urlSyncUX may not have fragment or query parts. should enhance pattern?"
+    },
+    "urlAsyncUX": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https",
+      "$comment": "urlAsyncUX may not have fragment or query parts. should enhance pattern?"
+    },
+    "urlAPI": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https",
+      "$comment": "urlAsyncUX may not have fragment or query parts. should enhance pattern?"
+    },
+    "width": {
+      "type": "number"
+    },
+    "height": {
+      "type": "number"
+    },
+    "urlControlPanel": {
+      "type": "string",
+      "format": "uri",
+      "$comment": "This URL MAY contain %domain% which is a replacement variable."
+    },
+    "nameServers": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "providerId",
+    "providerName",
+    "urlAPI"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "urlSyncUX"
+      ]
+    },
+    {
+      "required": [
+        "urlAsyncUX"
+      ]
+    }
+  ]
+}
