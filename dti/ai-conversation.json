@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Conversation History",
+  "description": "Schema for exporting personal AI conversation history",
+  "type": "object",
+  "properties": {
+    "details": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modality": {
+          "type": "string",
+          "default": "text"
+        },
+        "nextPage": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^http"
+        }
+      },
+      "required": [
+        "createdBy",
+        "createdAt",
+        "startTime",
+        "endTime"
+      ]
+    },
+    "identifiers": {
+      "type": "array",
+      "items": {
+        "title": "Sender identifier item",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "email"
+            ]
+          },
+          "identifier": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "identifier"
+        ]
+      },
+      "minItems": 1
+    },
+    "messages": {
+      "type": "array",
+      "minContains": 1,
+      "items": {
+        "title": "Message Item",
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "sentAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sender": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "Web"
+            ]
+          }
+        },
+        "required": [
+          "sentAt",
+          "text",
+          "sender"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "details",
+    "identifiers"
+  ]
+}
