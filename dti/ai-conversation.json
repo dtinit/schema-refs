@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://id.schemas.pub/o/DTI/ai-personal-history",
   "title": "AI Conversation History",
   "description": "Schema for exporting personal AI conversation history",
   "type": "object",
