@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "JSON Web Token (JWT) Claims Set and JOSE Header",
+  "description": "Schemas for the decoded JOSE Header and JWT Claims Set of a JSON Web Token, as defined in RFC 7519 (JWT) and RFC 7515 (JWS). Covers registered header parameters and registered claim names; additional public and private claims are permitted.",
+  "type": "object",
+  "properties": {
+    "header": { "$ref": "#/$defs/joseHeader" },
+    "payload": { "$ref": "#/$defs/claimsSet" }
+  },
+  "required": ["header", "payload"],
+  "$defs": {
+    "numericDate": {
+      "description": "RFC 7519 Section 2: seconds since 1970-01-01T00:00:00Z UTC, ignoring leap seconds. Non-integer values are allowed.",
+      "type": "number"
+    },
+    "stringOrURI": {
+      "description": "RFC 7519 Section 2: an arbitrary string, which MUST be a URI if it contains a ':' character.",
+      "type": "string"
+    },
+    "joseHeader": {
+      "description": "JOSE Header (RFC 7519 Section 5, RFC 7515 Section 4.1).",
+      "type": "object",
+      "properties": {
+        "alg": {
+          "description": "Algorithm used to secure the JWT (RFC 7515 Section 4.1.1). 'none' indicates an Unsecured JWT.",
+          "type": "string"
+        },
+        "typ": {
+          "description": "Media type of the complete JWT; 'JWT' is recommended (RFC 7519 Section 5.1).",
+          "type": "string"
+        },
+        "cty": {
+          "description": "Content type; 'JWT' for nested JWTs (RFC 7519 Section 5.2).",
+          "type": "string"
+        },
+        "kid": { "description": "Key ID (RFC 7515 Section 4.1.4).", "type": "string" },
+        "jku": { "description": "JWK Set URL (RFC 7515 Section 4.1.2).", "type": "string", "format": "uri" },
+        "jwk": { "description": "JSON Web Key (RFC 7515 Section 4.1.3).", "type": "object" },
+        "x5u": { "description": "X.509 URL (RFC 7515 Section 4.1.5).", "type": "string", "format": "uri" },
+        "x5c": {
+          "description": "X.509 certificate chain, base64-encoded DER (RFC 7515 Section 4.1.6).",
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "x5t": { "description": "X.509 certificate SHA-1 thumbprint, base64url (RFC 7515 Section 4.1.7).", "type": "string" },
+        "x5t#S256": { "description": "X.509 certificate SHA-256 thumbprint, base64url (RFC 7515 Section 4.1.8).", "type": "string" },
+        "crit": {
+          "description": "Critical header parameters that must be understood (RFC 7515 Section 4.1.11).",
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": ["alg"],
+      "additionalProperties": true
+    },
+    "claimsSet": {
+      "description": "JWT Claims Set (RFC 7519 Section 4). All registered claims are optional; public and private claims are allowed.",
+      "type": "object",
+      "properties": {
+        "iss": { "description": "Issuer (RFC 7519 Section 4.1.1).", "$ref": "#/$defs/stringOrURI" },
+        "sub": { "description": "Subject (RFC 7519 Section 4.1.2).", "$ref": "#/$defs/stringOrURI" },
+        "aud": {
+          "description": "Audience: a single StringOrURI or an array of them (RFC 7519 Section 4.1.3).",
+          "oneOf": [
+            { "$ref": "#/$defs/stringOrURI" },
+            { "type": "array", "items": { "$ref": "#/$defs/stringOrURI" } }
+          ]
+        },
+        "exp": { "description": "Expiration time (RFC 7519 Section 4.1.4).", "$ref": "#/$defs/numericDate" },
+        "nbf": { "description": "Not before (RFC 7519 Section 4.1.5).", "$ref": "#/$defs/numericDate" },
+        "iat": { "description": "Issued at (RFC 7519 Section 4.1.6).", "$ref": "#/$defs/numericDate" },
+        "jti": { "description": "JWT ID, a unique identifier (RFC 7519 Section 4.1.7).", "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}
